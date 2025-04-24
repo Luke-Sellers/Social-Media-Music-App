@@ -39,7 +39,6 @@ public class OutputCSV {
             }
             p.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Error: File not found");
             System.err.println("Error: File not found");
             System.exit(0);
         } catch (CustomException e) {

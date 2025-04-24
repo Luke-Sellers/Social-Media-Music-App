@@ -29,7 +29,7 @@ public class Cs214Project {
         }
 
         String option = args.length >= 3 ? args[2] : "";
-        boolean validOption = option.isEmpty() || option.equals("-u") || option.equals("-p") || option.equals("-r");
+        boolean validOption = option.isEmpty() || option.equals("-u") || option.equals("-p") || option.equals("-r") || option.equals("-i");
         if (!validOption) {
             throw new CustomException("unsupported argument '" + option + "'");
         }
@@ -76,6 +76,12 @@ public class Cs214Project {
                 }
                 KmeanCluster kc = new KmeanCluster();
                 out.recommendedCSV(args[1], kc.getKmeanCluster(read, selected));
+                break;
+            
+            case "-i":
+                SplashScreen splash = new SplashScreen();
+                splash.splash();
+                splash.initialize();
                 break;
 
             default:
