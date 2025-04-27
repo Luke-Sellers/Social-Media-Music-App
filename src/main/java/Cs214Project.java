@@ -7,12 +7,18 @@ public class Cs214Project {
     public static void main(String[] args) {
         try {
             validateArgs(args);
-            File input = new File(args[0]);
 
-            ReadFile read = new ReadFile();
-            read.readFile(input);
-
-            processOperation(args, read);
+            if (args.length == 1) {
+                SplashScreen splash = new SplashScreen();
+                splash.splash();
+                splash.initialize();
+            } else {
+                File input = new File(args[0]);
+                ReadFile read = new ReadFile();
+                read.readFile(input);
+                processOperation(args, read);
+            }
+            
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
             System.exit(0);
@@ -21,10 +27,10 @@ public class Cs214Project {
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     private static void validateArgs(String[] args) throws CustomException {
-        if (args.length < 2) {
+        if (args.length < 2 && !args[0].equals("-i")) {
             throw new CustomException("Incorrect number of arguments provided");
         }
-        if (!args[0].endsWith(".csv")) {
+        if ((!(args.length ==1)) && !args[0].endsWith(".csv")) {
             throw new CustomException("Incorrect file format");
         }
 
@@ -38,7 +44,8 @@ public class Cs214Project {
             throw new CustomException("Error: must select at lease one song for recommendations");
         }
 
-        if (!new File(args[0]).exists()) {
+        int i = args.length;
+        if (i != 1 && !new File(args[0]).exists()) {
             throw new CustomException("File not found");
         }
     }
@@ -76,12 +83,6 @@ public class Cs214Project {
                 }
                 KmeanCluster kc = new KmeanCluster();
                 out.recommendedCSV(args[1], kc.getKmeanCluster(read, selected));
-                break;
-            
-            case "-i":
-                SplashScreen splash = new SplashScreen();
-                splash.splash();
-                splash.initialize();
                 break;
 
             default:
