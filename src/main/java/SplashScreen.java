@@ -12,7 +12,7 @@ public class SplashScreen {
     .append("(         __________________________                      )\n")
     .append(")        ||                        ||                     (\n")
     .append("(        ||                        ||        (  ) )       )\n")
-    .append(")        ||     Musir Analyzec     ||         )( (        (\n")
+    .append(")        ||     Music Analyzer     ||         )( (        (\n")
     .append("(        ||          v1.0          ||        (  ) )       )\n")
     .append(")        ||                        ||       _________     (\n")
     .append("(        ||                        ||    .-'---------|    )\n")
@@ -36,11 +36,12 @@ public class SplashScreen {
     }
 
     public void first(String s, Scanner scnr) {
-        System.out.println("Enter folder path: ");
-
+        System.out.print("Enter folder path: ");
         File folder = new File(scnr.nextLine());
+        System.out.println();
         if (!folder.exists() || !folder.isDirectory()) {
             System.out.println("Error: Folder not found");
+            System.out.println();
             initialize();
         } else {
             second(scnr, folder);
@@ -58,9 +59,10 @@ public class SplashScreen {
     public void second(Scanner scnr, File folder) {
         secondMenu();
         String s = scnr.nextLine();
+        System.out.println();
         if (s.equals("1")) {
             ArrayList<String> filenames = new ArrayList<>();
-            ArrayList<File> filelist = new ArrayList<>();
+            File[] filelist = folder.listFiles();
             for (File file : filelist) {
             if (file.isFile() && file.getName().endsWith(".csv")) {
                     filenames.add(file.getName());
@@ -76,7 +78,7 @@ public class SplashScreen {
             if (j > i || j < i) {
                 second(scnr, folder);
             }
-            File f = filelist.get(j + 1);
+            File f = filelist[j + 1];
             action(scnr, f);
         } else if (s.equals("2")) {
             initialize();
@@ -98,20 +100,21 @@ public class SplashScreen {
         try {
         actionMenu();
         String s = scnr.nextLine();
+        System.out.println();
         ReadFile read = new ReadFile();
         read.readFile(f);
         OutputCSV out = new OutputCSV();
         switch (s) {
             case "1":
-                String output1 = scnr.nextLine();
                 System.out.print("Enter output path: ");
+                String output1 = scnr.nextLine();
                 out.createCSV(output1, read);
                 System.out.println("Output written to: " + output1);
                 break;
 
             case "2":
-                String output2 = scnr.nextLine();
                 System.out.print("Enter output path: ");
+                String output2 = scnr.nextLine();
                 NormalizeScore nsU = new NormalizeScore();
                 nsU.NormalizeUserScore(read);
                 EuclideanDistances euU = new EuclideanDistances();
@@ -120,8 +123,8 @@ public class SplashScreen {
                 break;
 
             case "3":
-                String output3 = scnr.nextLine();
                 System.out.print("Enter output path: ");
+                String output3 = scnr.nextLine();
                 NormalizeScore nsP = new NormalizeScore();
                 nsP.NormalizeUserScore(read);
                 EuclideanDistances euP = new EuclideanDistances();
@@ -131,8 +134,8 @@ public class SplashScreen {
                 break;
 
             case "4":
-                String output4 = scnr.nextLine();
                 System.out.print("Enter output path: ");
+                String output4 = scnr.nextLine();
                 Collections.sort(read.usernodes, new Comparator<Node>() {
                     @Override
                     public int compare(Node n1, Node n2) {
