@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Cs214Project {
 
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     public static void main(String[] args) {
         try {
             validateArgs(args);

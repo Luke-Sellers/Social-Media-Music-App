@@ -1,0 +1,11 @@
+name1,name2,similarity
+user1,user2,0.32881144084141245
+user1,user3,2.23606797749979
+user1,user4,1.9999999999999998
+user1,user5,NaN
+user2,user3,2.337326231486798
+user2,user4,2.0752194827489103
+user2,user5,NaN
+user3,user4,0.5857864376269052
+user3,user5,0.0
+user4,user5,NaN
