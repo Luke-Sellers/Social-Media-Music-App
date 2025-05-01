@@ -11,6 +11,13 @@ public class SplashScreen {
 
     Scanner scnr = new Scanner(System.in);
 
+    public boolean checkCSV(String s) {
+        if (s.contains(".csv")) {
+            return true;
+        }
+        return false;
+    }
+
     public void splash() {
         StringBuilder splash = new StringBuilder("===========================================================\n")
     .append("(         __________________________                      )\n")
@@ -35,16 +42,16 @@ public class SplashScreen {
         StringBuilder firstmenu = new StringBuilder("1 - Load Folder\n")
             .append("2 - Exit\n")
             .append("\n")
-            .append("Select an option: ");
+            .append("Select an option: \n");
         System.out.print(firstmenu);
     }
 
     public void first(String s, Scanner scnr) {
-        System.out.print("Enter folder path: ");
+        System.out.print("Enter folder path: \n");
         File folder = new File(scnr.nextLine());
         System.out.println();
         if (!folder.exists() || !folder.isDirectory()) {
-            System.out.println("Error: Folder not found");
+            System.out.println("Error: folder not found");
             System.out.println();
             initialize();
         } else {
@@ -56,11 +63,12 @@ public class SplashScreen {
         StringBuilder secondmenu = new StringBuilder("1 - Select File\n")
             .append("2 - Return\n")
             .append("\n")
-            .append("Select an option: ");
+            .append("Select an option: \n");
         System.out.print(secondmenu);
     }
 
     public void second(Scanner scnr, File folder) {
+        try {
         secondMenu();
         String s = scnr.nextLine();
         System.out.println();
@@ -79,17 +87,25 @@ public class SplashScreen {
                 System.out.println((filenames.indexOf(file) +1) +  " - " + file);
             }
             System.out.println();
-            System.out.print("Select a file number: ");
+            System.out.print("Select a file number: \n");
             String j = scnr.nextLine();
+            int i = filenames.size();
             System.out.println();
-            //if (j > i || j < 1) {
-                //second(scnr, folder);
-            //}
+            if (Integer.parseInt(j) > i || Integer.parseInt(j) < 1) {
+                throw new CustomException("Error: invalid option");
+            }
             int in = Integer.parseInt(j);
             File f = filelist[in - 1];
-            action(scnr, f);
+            action(scnr, f, folder);
         } else if (s.equals("2")) {
             initialize();
+        } else {
+            throw new CustomException("Error: invalid option");
+        }
+    } catch (CustomException e) {
+            System.out.println(e.getMessage());
+            System.out.println();
+            second(scnr, folder);
         }
     }
 
@@ -100,11 +116,11 @@ public class SplashScreen {
             .append("4 - User Recommendation\n")
             .append("5 - Return\n")
             .append("\n")
-            .append("Select an option: ");
+            .append("Select an option: \n");
         System.out.print(actionmenu);
     }
 
-    public void action(Scanner scnr, File f) {
+    public void action(Scanner scnr, File f, File folder) {
         try {
 
         actionMenu();
@@ -119,45 +135,70 @@ public class SplashScreen {
 
         switch (s) {
             case "1":
-                System.out.print("Enter output path: ");
+                System.out.print("Enter output path: \n");
                 String output1 = scnr.nextLine();
                 System.out.println();
+                if (!checkCSV(output1)) {
+                    System.out.println("Error: only `.csv` files are supported");
+                    System.out.println();
+                    action(scnr, f, folder);
+                    break;
+                }
                 out.createCSV(output1, read);
                 System.out.println("Output written to: " + output1);
                 System.out.println();
-                action(scnr, f);
+                action(scnr, f, folder);
                 break;
 
             case "2":
-                System.out.print("Enter output path: ");
+                System.out.print("Enter output path: \n");
                 String output2 = scnr.nextLine();
                 System.out.println();
+                if (!checkCSV(output2)) {
+                    System.out.println("Error: only `.csv` files are supported");
+                    System.out.println();
+                    action(scnr, f, folder);
+                    break;
+                }
                 NormalizeScore nsU = new NormalizeScore();
                 nsU.NormalizeUserScore(read);
                 EuclideanDistances euU = new EuclideanDistances();
-                out.similarityCSV(output2, nsU.usernodes, euU.SimilarityScore(nsU.usernodes));
+                out.similarityCSV(output2, nsU.usernodes, euU.Similarity(nsU.usernodes));
                 System.out.println("Output written to: " + output2);
-                action(scnr, f);
+                System.out.println();
+                action(scnr, f, folder);
                 break;
 
             case "3":
-                System.out.print("Enter output path: ");
+                System.out.print("Enter output path: \n");
                 String output3 = scnr.nextLine();
                 System.out.println();
+                if (!checkCSV(output3)) {
+                    System.out.println("Error: only `.csv` files are supported");
+                    System.out.println();
+                    action(scnr, f, folder);
+                    break;
+                }
                 NormalizeScore nsP = new NormalizeScore();
                 nsP.NormalizeUserScore(read);
                 EuclideanDistances euP = new EuclideanDistances();
                 predictRatings pr = new predictRatings();
-                out.predictedCSV(output3, pr.predictMissing(read, euP.SimilarityScore(nsP.usernodes)));
+                out.predictedCSV(output3, pr.pm(read, euP.Similarity(nsP.usernodes)));
                 System.out.println("Output written to: " + output3);
                 System.out.println();
-                action(scnr, f);
+                action(scnr, f, folder);
                 break;
 
             case "4":
-                System.out.print("Enter output path: ");
+                System.out.print("Enter output path: \n");
                 String output4 = scnr.nextLine();
                 System.out.println();
+                if (!checkCSV(output4)) {
+                    System.out.println("Error: only `.csv` files are supported");
+                    System.out.println();
+                    action(scnr, f, folder);
+                    break;
+                }
                 Collections.sort(read.songnodes, new Comparator<Node>() {
                     @Override
                     public int compare(Node n1, Node n2) {
@@ -168,21 +209,23 @@ public class SplashScreen {
                     System.out.println((read.songnodes.indexOf(n) + 1) + " - " + n.name);
                 }
                 System.out.println();
-                System.out.print("Enter selections (e.g. 2,5,7): ");
+                System.out.print("Enter selections (e.g. 2,5,7): \n");
                 String[] selectedarr = scnr.nextLine().split(",");
+                System.out.println();
                 List<String> selected = new ArrayList<>();
                 for (String g : selectedarr) {
                     g = "song" + g;
                     selected.add(g);
                 }
                 KmeanCluster kc = new KmeanCluster();
-                out.recommendedCSV(output4, kc.getKmeanCluster(read, selected));
-                System.out.println("Output written to: \n" + output4);
-                action(scnr, f);
+                out.recommendedCSV(output4, kc.gkm(read, selected));
+                System.out.println("Output written to: " + output4);
+                System.out.println();
+                action(scnr, f, folder);
                 break;
 
             case "5":
-                second(scnr, f);
+                second(scnr, folder);
                 break;
 
             default:
@@ -191,7 +234,7 @@ public class SplashScreen {
 
     } catch (CustomException e) {
         System.out.println("Error: " + e.getMessage() + "\n");
-        action(scnr, f);
+        action(scnr, f, folder);
     }
     }
 
@@ -206,10 +249,10 @@ public class SplashScreen {
             if (s.equals("1")) {
                 first(s, scnr);
             } else if (s.equals("2")) {
-                System.out.println("Exiting...");
                 System.exit(0);
             } else {
-                System.out.println("Error: Invalid option");
+                System.out.println("Error: invalid option");
+                System.out.println();
                 initialize();
             }
         } catch (Exception e) {

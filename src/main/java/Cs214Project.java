@@ -31,7 +31,7 @@ public class Cs214Project {
         if (args.length < 2 && !args[0].equals("-i")) {
             throw new CustomException("Incorrect number of arguments provided");
         }
-        if ((!(args.length ==1)) && !args[0].endsWith(".csv")) {
+        if (!(args.length ==1) && !args[0].endsWith(".csv")) {
             throw new CustomException("Incorrect file format");
         }
 

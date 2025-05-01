@@ -1,7 +1,10 @@
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
 public class KmeanCluster {
+
+    ArrayList<String[]> out = new ArrayList<>();
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     public ArrayList<String[]> fillaverages(ReadFile readfirst, ArrayList<String[]> pm) {
@@ -143,13 +146,11 @@ public class KmeanCluster {
             int k = selectedSongNames.size();
     
             if (readfirst.songnodes.size() < k + 1) {
-                System.err.println("Error: insufficient songs for clustering.");
-                System.exit(0);
+                throw new CustomException("Error: insufficient songs for clustering.");
             }
             Set<String> duplicateCheck = new HashSet<>(selectedSongNames);
             if (duplicateCheck.size() != selectedSongNames.size()) {
-                System.err.println("Error: duplicate song selections");
-                System.exit(0);
+                throw new CustomException("Error: duplicate song selections");
             }
 
             Set<String> seedSet = new HashSet<>(selectedSongNames);
@@ -161,8 +162,7 @@ public class KmeanCluster {
             for (String sel : selectedSongNames) {
                 Optional<Node> opt = readfirst.songnodes.stream().filter(s -> s.name.equals(sel)).findFirst();
                 if (opt.isEmpty()) {
-                    System.err.println("Error: selected song '" + sel + "' not found.");
-                    System.exit(0);
+                    throw new CustomException("Error: selected song '" + sel + "' not found.");
                 }
                 centroids.add(new ArrayList<>(opt.get().normalscore));
             }
@@ -209,7 +209,107 @@ public class KmeanCluster {
             ArrayList<String> sortedSongs = new ArrayList<>(songToCluster.keySet());
             Collections.sort(sortedSongs);
 
-            ArrayList<String[]> out = new ArrayList<>();
+            for (String seed : sortedSongs) {
+                List<String> recNames = songToCluster.get(seed).stream()
+                        .map(n -> n.name)
+                        .filter(name -> !seedSet.contains(name))
+                        .sorted()
+                        .collect(Collectors.toList());
+                for (String rec : recNames) out.add(new String[]{seed, rec});
+            }
+
+            if (out.isEmpty()) {
+                throw new CustomException("Error: all clusters empty or only contain original songs.");
+            }
+            return out;
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            System.exit(0);
+            return null;
+        }
+    }
+
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
+    public ArrayList<String[]> gkm(ReadFile readfirst, List<String> selectedSongNames) throws CustomException {
+            NormalizeScore ns = new NormalizeScore();
+            ns.NormalizeUserScore(readfirst);
+    
+            EuclideanDistances eu = new EuclideanDistances();
+            predictRatings pr = new predictRatings();
+            ArrayList<String[]> pm = pr.pm(readfirst, eu.Similarity(ns.usernodes));
+    
+            fillaverages(readfirst, pm);
+            addAndRemove(readfirst, pm);
+            alignRatings(readfirst);
+            fillSongScores(readfirst);
+            ns.NormalizeSongScore(readfirst);
+    
+            int k = selectedSongNames.size();
+    
+            if (readfirst.songnodes.size() < k + 1) {
+                throw new CustomException("Error: insufficient songs for clustering.");
+            }
+            Set<String> duplicateCheck = new HashSet<>(selectedSongNames);
+            if (duplicateCheck.size() != selectedSongNames.size()) {
+                throw new CustomException("Error: duplicate song selections");
+            }
+
+            Set<String> seedSet = new HashSet<>(selectedSongNames);
+
+            ArrayList<ArrayList<Node>> clusters = new ArrayList<>();
+            ArrayList<ArrayList<Double>> centroids = new ArrayList<>();
+            for (int i = 0; i < k; i++) clusters.add(new ArrayList<>());
+    
+            for (String sel : selectedSongNames) {
+                Optional<Node> opt = readfirst.songnodes.stream().filter(s -> s.name.equals(sel)).findFirst();
+                if (opt.isEmpty()) {
+                    throw new CustomException("Error: selected song '" + sel + "' not found.");
+                }
+                centroids.add(new ArrayList<>(opt.get().normalscore));
+            }
+
+            int dim = readfirst.usernodes.size();
+
+            for (int it = 0; it < 10; it++) {
+                for (ArrayList<Node> c : clusters) c.clear();
+
+                for (Node song : readfirst.songnodes) {
+                    double best = Double.MAX_VALUE; 
+                    int bestIdx = 0;
+                    for (int c = 0; c < k; c++) {
+                        double dist = 0.0;
+                        List<Double> cent = centroids.get(c), vec = song.normalscore;
+                        for (int d = 0; d < vec.size(); d++) {
+                            double a = vec.get(d), b = cent.get(d);
+                            if (!Double.isNaN(a) && !Double.isNaN(b)) {
+                                double diff = a - b; dist += diff * diff;
+                            }
+                        }
+                        if (dist < best) { best = dist; bestIdx = c; }
+                    }
+                    clusters.get(bestIdx).add(song);
+                }
+
+                for (int c = 0; c < k; c++) {
+                    ArrayList<Double> mean = new ArrayList<>(dim);
+                    for (int d = 0; d < dim; d++) {
+                        double sum = 0; int cnt = 0;
+                        for (Node s : clusters.get(c)) {
+                            double v = s.normalscore.get(d);
+                            if (!Double.isNaN(v)) { sum += v; cnt++; }
+                        }
+                        mean.add(cnt > 0 ? sum / cnt : centroids.get(c).get(d));
+                    }
+                    centroids.set(c, mean);
+                }
+            }
+
+            Map<String, List<Node>> songToCluster = new HashMap<>();
+            for (int c = 0; c < k; c++) songToCluster.put(selectedSongNames.get(c), clusters.get(c));
+
+            ArrayList<String> sortedSongs = new ArrayList<>(songToCluster.keySet());
+            Collections.sort(sortedSongs);
 
             for (String seed : sortedSongs) {
                 List<String> recNames = songToCluster.get(seed).stream()
@@ -221,15 +321,8 @@ public class KmeanCluster {
             }
 
             if (out.isEmpty()) {
-                System.err.println("Error: all clusters empty or only contain original songs.");
-                System.exit(0);
+                throw new CustomException("Error: all clusters empty or only contain original songs.");
             }
             return out;
-
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-            System.exit(0);
-            return new ArrayList<>();
-        }
     }
 }
