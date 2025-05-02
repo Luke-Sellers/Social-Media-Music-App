@@ -1,0 +1,133 @@
+===========================================================
+(         __________________________                      )
+)        ||                        ||                     (
+(        ||                        ||        (  ) )       )
+)        ||     Music Analyzer     ||         )( (        (
+(        ||          v1.0          ||        (  ) )       )
+)        ||                        ||       _________     (
+(        ||                        ||    .-'---------|    )
+)        *__________________________*   ( c  Java 20 |    (
+(       / ==__oooo__==___ooooo-+ o //    `-.         |    )
+)      /  oooo   ______  ooooo    //       '_________'    (
+(     /         /_____/          /'         `-------'     )
+)     `-------------------------'                         (
+(                                                         )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1 - Load Folder
+2 - Exit
+
+Select an option: a
+
+Error: invalid option
+
+1 - Load Folder
+2 - Exit
+
+Select an option: 1
+
+Enter folder path: qwerty
+
+Error: folder not found
+
+1 - Load Folder
+2 - Exit
+
+Select an option: 1
+
+Enter folder path: database/files
+
+1 - Select File
+2 - Return
+
+Select an option: 3
+
+Error: invalid option
+
+1 - Select File
+2 - Return
+
+Select an option: 1
+
+1 - denorm_greater_than_5.csv
+2 - file1.csv
+3 - file2.csv
+4 - file3.csv
+5 - file4.csv
+6 - file5.csv
+7 - large_dataset.csv
+8 - one_song.csv
+9 - one_user.csv
+
+Select file number: 10
+
+Error: invalid option
+
+1 - Select File
+2 - Return
+
+Select an option: 1
+
+1 - denorm_greater_than_5.csv
+2 - file1.csv
+3 - file2.csv
+4 - file3.csv
+5 - file4.csv
+6 - file5.csv
+7 - large_dataset.csv
+8 - one_song.csv
+9 - one_user.csv
+
+Select file number: 7
+
+1 - Song Stats
+2 - User Similarity
+3 - User Prediction
+4 - User Recommendation
+5 - Return
+
+Select an option: sim
+
+Error: invalid option
+
+1 - Song Stats
+2 - User Similarity
+3 - User Prediction
+4 - User Recommendation
+5 - Return
+
+Select an option: 3
+
+Enter output path: prediction.txt
+
+Error: only `.csv` files are supported
+
+1 - Song Stats
+2 - User Similarity
+3 - User Prediction
+4 - User Recommendation
+5 - Return
+
+Select an option: 3
+
+Enter output path: prediction.csv
+
+Output written to: prediction.csv
+
+1 - Song Stats
+2 - User Similarity
+3 - User Prediction
+4 - User Recommendation
+5 - Return
+
+Select an option: 5
+
+1 - Select File
+2 - Return
+
+Select an option: 2
+
+1 - Load Folder
+2 - Exit
+
+Select an option: 2

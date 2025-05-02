@@ -42,14 +42,14 @@ public class SplashScreen {
         StringBuilder firstmenu = new StringBuilder("1 - Load Folder\n")
             .append("2 - Exit\n")
             .append("\n")
-            .append("Select an option: \n");
+            .append("Select an option: ");
         System.out.print(firstmenu);
     }
 
     public void first(String s, Scanner scnr) {
-        System.out.print("Enter folder path: \n");
-        File folder = new File(scnr.nextLine());
-        System.out.println();
+        System.out.print("Enter folder path: ");
+        File folder = new File(scnr.next());
+        System.out.println("\n");
         if (!folder.exists() || !folder.isDirectory()) {
             System.out.println("Error: folder not found");
             System.out.println();
@@ -63,15 +63,15 @@ public class SplashScreen {
         StringBuilder secondmenu = new StringBuilder("1 - Select File\n")
             .append("2 - Return\n")
             .append("\n")
-            .append("Select an option: \n");
+            .append("Select an option: ");
         System.out.print(secondmenu);
     }
 
     public void second(Scanner scnr, File folder) {
         try {
         secondMenu();
-        String s = scnr.nextLine();
-        System.out.println();
+        String s = scnr.next();
+        System.out.println("\n");
         if (s.equals("1")) {
             ArrayList<String> filenames = new ArrayList<>();
             File[] filelist = folder.listFiles();
@@ -87,10 +87,10 @@ public class SplashScreen {
                 System.out.println((filenames.indexOf(file) +1) +  " - " + file);
             }
             System.out.println();
-            System.out.print("Select a file number: \n");
-            String j = scnr.nextLine();
+            System.out.print("Select file number: ");
+            String j = scnr.next();
             int i = filenames.size();
-            System.out.println();
+            System.out.println("\n");
             if (Integer.parseInt(j) > i || Integer.parseInt(j) < 1) {
                 throw new CustomException("Error: invalid option");
             }
@@ -125,8 +125,8 @@ public class SplashScreen {
 
         actionMenu();
         String s = "";
-        if (scnr.hasNextLine()) {
-            s = scnr.nextLine();
+        if (scnr.hasNext()) {
+            s = scnr.next();
         }
         System.out.println();
         ReadFile read = new ReadFile();
@@ -135,9 +135,9 @@ public class SplashScreen {
 
         switch (s) {
             case "1":
-                System.out.print("Enter output path: \n");
-                String output1 = scnr.nextLine();
-                System.out.println();
+                System.out.print("Enter output path: ");
+                String output1 = scnr.next();
+                System.out.println("\n");
                 if (!checkCSV(output1)) {
                     System.out.println("Error: only `.csv` files are supported");
                     System.out.println();
@@ -151,9 +151,9 @@ public class SplashScreen {
                 break;
 
             case "2":
-                System.out.print("Enter output path: \n");
-                String output2 = scnr.nextLine();
-                System.out.println();
+                System.out.print("Enter output path: ");
+                String output2 = scnr.next();
+                System.out.println("\n");
                 if (!checkCSV(output2)) {
                     System.out.println("Error: only `.csv` files are supported");
                     System.out.println();
@@ -170,9 +170,9 @@ public class SplashScreen {
                 break;
 
             case "3":
-                System.out.print("Enter output path: \n");
-                String output3 = scnr.nextLine();
-                System.out.println();
+                System.out.print("Enter output path: ");
+                String output3 = scnr.next();
+                System.out.println("\n");
                 if (!checkCSV(output3)) {
                     System.out.println("Error: only `.csv` files are supported");
                     System.out.println();
@@ -190,9 +190,9 @@ public class SplashScreen {
                 break;
 
             case "4":
-                System.out.print("Enter output path: \n");
-                String output4 = scnr.nextLine();
-                System.out.println();
+                System.out.print("Enter output path: ");
+                String output4 = scnr.next();
+                System.out.println("\n");
                 if (!checkCSV(output4)) {
                     System.out.println("Error: only `.csv` files are supported");
                     System.out.println();
@@ -210,7 +210,7 @@ public class SplashScreen {
                 }
                 System.out.println();
                 System.out.print("Enter selections (e.g. 2,5,7): \n");
-                String[] selectedarr = scnr.nextLine().split(",");
+                String[] selectedarr = scnr.next().split(",");
                 System.out.println();
                 List<String> selected = new ArrayList<>();
                 for (String g : selectedarr) {
@@ -242,10 +242,10 @@ public class SplashScreen {
         try {
             firstMenu();
             String s = "";
-            if (scnr.hasNextLine()) {
-                s = scnr.nextLine();
+            if (scnr.hasNext()) {
+                s = scnr.next();
             }
-            System.out.println();
+            System.out.println("\n");
             if (s.equals("1")) {
                 first(s, scnr);
             } else if (s.equals("2")) {
